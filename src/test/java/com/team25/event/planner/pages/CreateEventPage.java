@@ -2,6 +2,10 @@ package com.team25.event.planner.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class CreateEventPage {
     private final WebDriver driver;
@@ -24,6 +28,13 @@ public class CreateEventPage {
     private final By addressField = By.cssSelector("input[formControlName='address']");
     private final By maxParticipantsField = By.cssSelector("input[formControlName='maxParticipants']");
     private final By submitButton = By.cssSelector("button[type='submit']");
+    private final By nameError = By.xpath("//input[@formControlName='name']/ancestor::mat-form-field//mat-error");
+    private final By descriptionError = By.xpath("//input[@formControlName='description']/ancestor::mat-form-field//mat-error");
+    private final By countryError = By.xpath("//input[@formControlName='country']/ancestor::mat-form-field//mat-error");
+    private final By cityError = By.xpath("//input[@formControlName='city']/ancestor::mat-form-field//mat-error");
+    private final By addressError = By.xpath("//input[@formControlName='address']/ancestor::mat-form-field//mat-error");
+    private final By dateTimeError = By.cssSelector(".date-time-section mat-error");
+    private final By invitationCloseButton = By.xpath("//mat-dialog-container//button[span[contains(text(), 'Cancel')]]");
 
     public void enterName(String name) {
         driver.findElement(nameField).sendKeys(name);
@@ -77,5 +88,39 @@ public class CreateEventPage {
 
     public void submitForm() {
         driver.findElement(submitButton).click();
+    }
+
+    public String getNameError() {
+        return driver.findElement(nameError).getText();
+    }
+
+    public String getDescriptionError() {
+        return driver.findElement(descriptionError).getText();
+    }
+
+    public String getCountryError() {
+        return driver.findElement(countryError).getText();
+    }
+
+    public String getCityError() {
+        return driver.findElement(cityError).getText();
+    }
+
+    public String getAddressError() {
+        return driver.findElement(addressError).getText();
+    }
+
+    public String getDateTimeError() {
+        return driver.findElement(dateTimeError).getText();
+    }
+
+    public boolean isSubmitButtonDisabled() {
+        return "true".equals(driver.findElement(submitButton).getDomAttribute("disabled"));
+    }
+
+    public void waitForAndCloseInvitationDialog() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(invitationCloseButton));
+        driver.findElement(invitationCloseButton).click();
     }
 }

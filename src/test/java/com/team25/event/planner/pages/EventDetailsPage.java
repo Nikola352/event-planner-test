@@ -21,6 +21,7 @@ public class EventDetailsPage {
     private final By description = By.cssSelector(".event-details .detail-item:nth-child(3) p");
     private final By organizer = By.cssSelector(".event-details .detail-item:nth-child(4) .detail-text span.primary-text");
     private final By numParticipants = By.cssSelector(".event-details .detail-item:nth-child(4) .detail-text span.secondary-text");
+    private final By privacyChip = By.cssSelector(".privacy-chip span.wrapper span");
     private final By activityTitle = By.cssSelector(".timeline-container .timeline-card mat-card-title");
 
     public String getEventName() {
@@ -49,6 +50,10 @@ public class EventDetailsPage {
 
     public int getNumParticipants() throws NumberFormatException {
         return Integer.parseInt(driver.findElement(numParticipants).getText().substring(18));
+    }
+
+    public String getPrivacyType() {
+        return driver.findElement(privacyChip).getText();
     }
 
     public List<String> getActivities() {
