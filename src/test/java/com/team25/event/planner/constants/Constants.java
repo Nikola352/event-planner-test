@@ -5,4 +5,5 @@ public class Constants {
 
     public static final String LOGIN_URL = FRONTEND_URL + "/user/login";
     public static final String CREATE_EVENT_URL = FRONTEND_URL + "/event";
+    public static final String HOME_PAGE_URL = FRONTEND_URL + "/";
 }
