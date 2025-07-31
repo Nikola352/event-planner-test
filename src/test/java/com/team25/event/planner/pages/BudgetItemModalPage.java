@@ -12,12 +12,12 @@ public class BudgetItemModalPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private By modalContainer = By.xpath("//div[contains(@class,'mat-mdc-dialog-surface')]");
-    private By offeringCategoryDropdown = By.xpath("//span[contains(@class,'mat-mdc-select-placeholder') and normalize-space()='Choose an offering category']/ancestor::div[contains(@class,'mat-mdc-select-trigger')]");
-    private By budgetInput = By.cssSelector("input[placeholder='Enter category budget']");
-    private By saveButton = By.xpath("//span[@class='mdc-button__label' and text()='Approve']/ancestor::button");
-    private By cancelButton = By.xpath("//span[@class='mdc-button__label' and text()='Cancel']/ancestor::button");
-    private By error = By.cssSelector("mat-error");
+    private final By modalContainer = By.xpath("//div[contains(@class,'mat-mdc-dialog-surface')]");
+    private final By offeringCategorySelect = By.cssSelector("mat-select[placeholder='Choose an offering category']");
+    private final By budgetInput = By.cssSelector("input[placeholder='Enter category budget']");
+    private final By saveButton = By.xpath("//span[@class='mdc-button__label' and text()='Approve']/ancestor::button");
+    private final By cancelButton = By.xpath("//span[@class='mdc-button__label' and text()='Cancel']/ancestor::button");
+    private final By error = By.cssSelector("mat-error");
 
 
     public BudgetItemModalPage(WebDriver driver) {
@@ -25,17 +25,20 @@ public class BudgetItemModalPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(modalContainer));
     }
-
     public boolean isOfferingCategoryDisabled() {
-        WebElement dropdown = driver.findElement(offeringCategoryDropdown);
-        return dropdown.getAttribute("class").contains("mat-select-disabled");
-    }
+        WebElement select = driver.findElement(offeringCategorySelect);
+        String ariaDisabled = select.getAttribute("aria-disabled");
+        String classes = select.getAttribute("class");
 
+        return (ariaDisabled != null && ariaDisabled.equals("true"))
+                || classes.contains("mat-mdc-select-disabled")
+                || !select.isEnabled();
+    }
     public void selectOfferingCategory(String categoryName) {
         if (isOfferingCategoryDisabled()) {
             return;
         }
-        wait.until(ExpectedConditions.elementToBeClickable(offeringCategoryDropdown)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(offeringCategorySelect)).click();
         WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//mat-option//span[contains(text(),'" + categoryName + "')]")
         ));

@@ -65,7 +65,7 @@ public class BudgetPlanPage {
     public void clickEditButtonInRow(int rowIndex) {
         waitForTableToLoad();
         WebElement row = driver.findElements(tableRowsLocator).get(rowIndex);
-        WebElement editButton = row.findElement(By.cssSelector("button mat-icon[ng-reflect-svg-icon='edit'], button mat-icon:contains('edit')"));
+        WebElement editButton = row.findElement(By.xpath(".//mat-icon[normalize-space()='edit']/ancestor::button\n"));
         editButton.click();
     }
 
@@ -73,7 +73,7 @@ public class BudgetPlanPage {
     public void clickDeleteButtonInRow(int rowIndex) {
         waitForTableToLoad();
         WebElement row = driver.findElements(tableRowsLocator).get(rowIndex);
-        WebElement deleteButton = row.findElement(By.cssSelector("button mat-icon:contains('delete')"));
+        WebElement deleteButton = row.findElement(By.xpath(".//mat-icon[normalize-space()='delete']/ancestor::button"));
         deleteButton.click();
     }
 

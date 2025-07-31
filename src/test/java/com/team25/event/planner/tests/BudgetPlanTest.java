@@ -41,8 +41,8 @@ public class BudgetPlanTest extends BaseTest {
         List<List<String>> rows = budgetPlanPage.getTableData();
         // assert
         assertTrue(rows.stream().anyMatch(r -> r.contains("Catering Services") && r.contains("500")));
-        assertEquals(1, budgetPlanPage.getRowCount());
-        assertEquals("500.00 $", budgetPlanPage.getOverallBudget());
+        assertEquals(2, budgetPlanPage.getRowCount());
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class BudgetPlanTest extends BaseTest {
         modal.clickCancel();
 
         assertEquals(initialRowCount, budgetPlanPage.getRowCount());
-        assertEquals("500.00 $", budgetPlanPage.getOverallBudget());
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
     }
 
     @Test
@@ -81,7 +81,80 @@ public class BudgetPlanTest extends BaseTest {
         modal.clickCancel();
 
         assertEquals(initialRowCount, budgetPlanPage.getRowCount());
-        assertEquals("500.00 $", budgetPlanPage.getOverallBudget());
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
     }
+
+    @Test
+    public void testValidBudgetUpdate() {
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+
+        int initialRowCount = budgetPlanPage.getRowCount();
+        assertEquals(2, initialRowCount);
+
+        budgetPlanPage.clickEditButtonInRow(1);
+        BudgetItemModalPage modal = new BudgetItemModalPage(driver);
+
+        assertTrue(modal.isOfferingCategoryDisabled());
+
+        modal.setBudget("800");
+        modal.clickSave(true);
+
+        assertEquals(initialRowCount, budgetPlanPage.getRowCount());
+        String updatedBudget = budgetPlanPage.getTableData().get(1).get(1);
+
+        assertEquals("800", updatedBudget);
+        assertEquals("3000.00 $", budgetPlanPage.getOverallBudget());
+    }
+
+    @Test
+    public void testUpdateBudgetWithInvalidValue() {
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+
+        int initialRowCount = budgetPlanPage.getRowCount();
+        assertEquals(2, initialRowCount);
+        String originalBudget = budgetPlanPage.getTableData().get(1).get(1);
+        String originalOverall = budgetPlanPage.getOverallBudget();
+
+        budgetPlanPage.clickEditButtonInRow(1);
+        BudgetItemModalPage modal = new BudgetItemModalPage(driver);
+
+        assertTrue(modal.isOfferingCategoryDisabled());
+
+        modal.setBudget("-1");
+        modal.clickSave(false);
+
+        assertEquals("Budget must be at least €1.", modal.getErrorMessage());
+
+        modal.clickCancel();
+
+        assertEquals(initialRowCount, budgetPlanPage.getRowCount());
+        assertEquals(originalBudget, budgetPlanPage.getTableData().get(1).get(1));
+        assertEquals(originalOverall, budgetPlanPage.getOverallBudget());
+    }
+
+    @Test
+    public void testUpdateBudgetWithLowBudgetForPurchasedCategory(){
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+
+        int initialRowCount = budgetPlanPage.getRowCount();
+        assertEquals(2, initialRowCount);
+
+        budgetPlanPage.clickEditButtonInRow(0);
+        BudgetItemModalPage modal = new BudgetItemModalPage(driver);
+
+        assertTrue(modal.isOfferingCategoryDisabled());
+
+        modal.setBudget("800");
+        modal.clickSave(false);
+
+        ErrorDialogPage errorDialog = new ErrorDialogPage(driver);
+        assertEquals("Your budget is not enough for purchased offering", errorDialog.getErrorMessage());
+        errorDialog.closeDialog();
+
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
+        assertEquals(initialRowCount, budgetPlanPage.getRowCount());
+
+    }
+
 
 }
