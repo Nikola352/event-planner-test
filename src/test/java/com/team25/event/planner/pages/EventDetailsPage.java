@@ -30,6 +30,7 @@ public class EventDetailsPage {
     private final By numParticipants = By.cssSelector(".event-details .detail-item:nth-child(4) .detail-text span.secondary-text");
     private final By privacyChip = By.cssSelector(".privacy-chip span.wrapper span");
     private final By activityTitle = By.cssSelector(".timeline-container .timeline-card mat-card-title");
+    private final By budgetPlanButton = By.xpath( "//span[contains(text(), 'Budget Plan')]/ancestor::button");
 
     public String getEventName() {
         return driver.findElement(eventName).getText();
@@ -57,6 +58,10 @@ public class EventDetailsPage {
 
     public int getNumParticipants() throws NumberFormatException {
         return Integer.parseInt(driver.findElement(numParticipants).getText().substring(18));
+    }
+
+    public void openBudgetPlan() {
+        driver.findElement(budgetPlanButton).click();
     }
 
     public Date getStartDate() {
