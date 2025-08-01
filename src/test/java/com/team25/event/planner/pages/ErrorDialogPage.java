@@ -28,10 +28,7 @@ public class ErrorDialogPage {
     }
 
     public void closeDialog() {
-        System.out.println("Clicking close button...");
         wait.until(ExpectedConditions.elementToBeClickable(closeButton)).click();
-        System.out.println("Clicked. Waiting for dialog to disappear...");
         wait.until(ExpectedConditions.invisibilityOfElementLocated(dialogContainer));
-        System.out.println("Dialog closed.");
     }
 }

@@ -48,7 +48,6 @@ public class BudgetPlanTest extends BaseTest {
     @Test
     public void testDuplicateOfferingCategory() {
         BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
-        int initialRowCount = budgetPlanPage.getRowCount();
 
         budgetPlanPage.clickAddNewBudgetItem();
         BudgetItemModalPage modal = new BudgetItemModalPage(driver);
@@ -61,8 +60,11 @@ public class BudgetPlanTest extends BaseTest {
 
         modal.clickCancel();
 
-        assertEquals(initialRowCount, budgetPlanPage.getRowCount());
+        List<List<String>> rows = budgetPlanPage.getTableData();
+
+        assertEquals(2, budgetPlanPage.getRowCount());
         assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
+
     }
 
     @Test
@@ -155,6 +157,98 @@ public class BudgetPlanTest extends BaseTest {
         assertEquals(initialRowCount, budgetPlanPage.getRowCount());
 
     }
+    @Test
+    public void testDeleteCancel() {
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+        int initialCount = budgetPlanPage.getRowCount();
 
+        budgetPlanPage.clickDeleteButtonInRow(0);
 
+        ConfirmationDialogPage deleteDialog = new ConfirmationDialogPage(driver);
+        assertEquals("Do you really want to delete Entertainment Services", deleteDialog.getMessage());
+
+        deleteDialog.clickCancel();
+
+        List<List<String>> rows = budgetPlanPage.getTableData();
+
+        assertEquals(initialCount, budgetPlanPage.getRowCount());
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
+        assertTrue(rows.stream().anyMatch(r -> r.contains("Entertainment Services") && r.contains("2200")));
+    }
+
+    @Test
+    public void testDeleteConfirm() {
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+        budgetPlanPage.clickAddNewBudgetItem();
+
+        BudgetItemModalPage modal = new BudgetItemModalPage(driver);
+        modal.selectOfferingCategory("Technical Services");
+        modal.setBudget("500");
+        modal.clickSave(true);
+
+        List<List<String>> rows = budgetPlanPage.getTableData();
+        // assert
+        assertTrue(rows.stream().anyMatch(r -> r.contains("Technical Services") && r.contains("500")));
+        assertEquals(3, budgetPlanPage.getRowCount());
+        assertEquals("3200.00 $", budgetPlanPage.getOverallBudget());
+        int initialCount = budgetPlanPage.getRowCount();
+
+        budgetPlanPage.clickDeleteButtonInRow(2);
+
+        ConfirmationDialogPage deleteDialog = new ConfirmationDialogPage(driver);
+        assertEquals("Do you really want to delete Technical Services", deleteDialog.getMessage());
+
+        deleteDialog.clickDelete();
+        budgetPlanPage.waitForRowCountToBe(initialCount - 1);
+        rows = budgetPlanPage.getTableData();
+
+        assertEquals(initialCount - 1, budgetPlanPage.getRowCount());
+        assertTrue(rows.stream().noneMatch(r -> r.contains("Technical Services") && r.contains("500")));
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
+    }
+
+    @Test
+    public void testDeleteFailWithErrorDialog() {
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+        int initialCount = budgetPlanPage.getRowCount();
+
+        budgetPlanPage.clickDeleteButtonInRow(0);
+
+        ConfirmationDialogPage deleteDialog = new ConfirmationDialogPage(driver);
+        assertEquals("Do you really want to delete Entertainment Services", deleteDialog.getMessage());
+
+        deleteDialog.clickDelete();
+
+        ErrorDialogPage errorDialog = new ErrorDialogPage(driver);
+        assertEquals("Offering category belongs to purchased offering", errorDialog.getErrorMessage());
+        errorDialog.closeDialog();
+
+        List<List<String>> rows = budgetPlanPage.getTableData();
+
+        assertEquals(initialCount, budgetPlanPage.getRowCount());
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
+        assertTrue(rows.stream().anyMatch(r -> r.contains("Entertainment Services") && r.contains("2200")));
+    }
+
+    @Test
+    public void testFinishBudgetPlan(){
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+        EventDetailsPage eventDetailsPage = budgetPlanPage.clickFinishButton();
+
+        assertEquals("Pop Concert", eventDetailsPage.getEventName());
+        eventDetailsPage.openBudgetPlan();
+    }
+
+    @Test
+    public void testListBudgetItems(){
+        BudgetPlanPage budgetPlanPage = new BudgetPlanPage(driver);
+        List<List<String>> expectedRows = List.of(
+                List.of("Entertainment Services", "2200"),
+                List.of("Catering Services", "500")
+        );
+
+        assertTrue(budgetPlanPage.areRowsPresent(expectedRows));
+        assertEquals(2, budgetPlanPage.getRowCount());
+        assertEquals("2700.00 $", budgetPlanPage.getOverallBudget());
+    }
 }

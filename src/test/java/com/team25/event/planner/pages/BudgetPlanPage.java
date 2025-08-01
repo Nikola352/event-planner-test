@@ -26,7 +26,12 @@ public class BudgetPlanPage {
     private final By tableCellsLocator = By.cssSelector("mat-table mat-cell");
     private final By budgetLabelLocator = By.cssSelector("div.price-display");
     private final By addBudgetButtonLocator = By.xpath("//span[contains(@class,'mdc-button__label') and normalize-space()='Add new budget item']/ancestor::button");
+    private final By finishButton = By.xpath("//button[.//span[normalize-space()='Finish Budget Plan']]");
 
+
+    public void waitForRowCountToBe(int expectedCount) {
+        wait.until(ExpectedConditions.numberOfElementsToBe(tableRowsLocator, expectedCount));
+    }
     public void waitForTableToLoad() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(tableLocator));
     }
@@ -53,6 +58,23 @@ public class BudgetPlanPage {
 
     public void clickAddNewBudgetItem() {
         wait.until(ExpectedConditions.elementToBeClickable(addBudgetButtonLocator)).click();
+    }
+
+    public EventDetailsPage clickFinishButton() {
+        wait.until(ExpectedConditions.elementToBeClickable(finishButton)).click();
+        return new EventDetailsPage(driver);
+    }
+
+    public boolean areRowsPresent(List<List<String>> expectedRows) {
+        List<List<String>> actualRows = getTableData();
+
+        for (List<String> expectedRow : expectedRows) {
+            boolean found = actualRows.stream().anyMatch(row -> row.containsAll(expectedRow));
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

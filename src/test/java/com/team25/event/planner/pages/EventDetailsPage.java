@@ -3,9 +3,12 @@ package com.team25.event.planner.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -13,9 +16,12 @@ import java.util.TimeZone;
 
 public class EventDetailsPage {
     private final WebDriver driver;
+    private WebDriverWait wait;
 
     public EventDetailsPage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(eventName));
     }
 
     // Locators
@@ -33,6 +39,7 @@ public class EventDetailsPage {
     private final By budgetPlanButton = By.xpath( "//span[contains(text(), 'Budget Plan')]/ancestor::button");
 
     public String getEventName() {
+
         return driver.findElement(eventName).getText();
     }
 
