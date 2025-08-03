@@ -29,6 +29,8 @@ public class CreateEventTest extends BaseTest {
         driver.get(Constants.CREATE_EVENT_URL);
         CreateEventPage createEventPage = new CreateEventPage(driver);
 
+        waitForElementToBePresent(createEventPage.getInitiallyPresentElement());
+
         // Fill in the form
         createEventPage.enterName("New Event");
         createEventPage.selectEventType("Conference");
@@ -117,6 +119,8 @@ public class CreateEventTest extends BaseTest {
         driver.get(Constants.CREATE_EVENT_URL);
         CreateEventPage createEventPage = new CreateEventPage(driver);
 
+        waitForElementToBePresent(createEventPage.getInitiallyPresentElement());
+
         // Click into required fields to make them dirty
         createEventPage.enterName("");
         createEventPage.enterCity("");
@@ -136,6 +140,8 @@ public class CreateEventTest extends BaseTest {
     public void testCreateEventWithInvalidDates() {
         driver.get(Constants.CREATE_EVENT_URL);
         CreateEventPage createEventPage = new CreateEventPage(driver);
+
+        waitForElementToBePresent(createEventPage.getInitiallyPresentElement());
 
         createEventPage.enterName("Invalid Date Event");
         createEventPage.selectEventType("Conference");
@@ -162,6 +168,8 @@ public class CreateEventTest extends BaseTest {
     public void testCreateEventWithoutParticipantsLimitNoAgenda() {
         driver.get(Constants.CREATE_EVENT_URL);
         CreateEventPage createEventPage = new CreateEventPage(driver);
+
+        waitForElementToBePresent(createEventPage.getInitiallyPresentElement());
 
         createEventPage.enterName("No Participants Limit Event");
         createEventPage.selectEventType("Conference");
@@ -211,6 +219,8 @@ public class CreateEventTest extends BaseTest {
     public void testCreatePrivateEvent() {
         driver.get(Constants.CREATE_EVENT_URL);
         CreateEventPage createEventPage = new CreateEventPage(driver);
+
+        waitForElementToBePresent(createEventPage.getInitiallyPresentElement());
 
         createEventPage.enterName("Private Event");
         createEventPage.selectEventType("Conference");
