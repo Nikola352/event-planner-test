@@ -123,4 +123,8 @@ public class CreateEventPage {
         wait.until(ExpectedConditions.presenceOfElementLocated(invitationCloseButton));
         driver.findElement(invitationCloseButton).click();
     }
+
+    public By getInitiallyPresentElement() {
+        return nameField;
+    }
 }
