@@ -18,7 +18,7 @@ import java.util.*;
 
 import static org.testng.Assert.*;
 
-public class FilterSortEventsTest extends BaseTest {
+public class FilterEventsTest extends BaseTest {
 
     @BeforeClass
     public void start(){
