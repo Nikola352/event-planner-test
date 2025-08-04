@@ -66,6 +66,8 @@ public class CreateEventTest extends BaseTest {
         agendaPage.enterLocation("Main hall");
         agendaPage.clickAddButton();
 
+        agendaPage.waitForActivityCountToBe(1);
+
         List<String> activities = agendaPage.getActivities();
         assertFalse(activities.isEmpty());
         assertEquals(activities.getFirst(), "First Activity");
@@ -77,6 +79,8 @@ public class CreateEventTest extends BaseTest {
         agendaPage.enterStartTime("10:00");
         agendaPage.enterEndTime("12:00");
         agendaPage.clickAddButton();
+
+        agendaPage.waitForActivityCountToBe(2);
 
         activities = agendaPage.getActivities();
         assertEquals(activities.size(), 2);

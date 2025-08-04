@@ -3,7 +3,10 @@ package com.team25.event.planner.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class AgendaPage {
@@ -63,5 +66,10 @@ public class AgendaPage {
 
     public List<String> getActivities() {
         return driver.findElements(activityTitle).stream().map(WebElement::getText).toList();
+    }
+
+    public void waitForActivityCountToBe(int expectedCount) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.numberOfElementsToBe(activityTitle, expectedCount));
     }
 }
