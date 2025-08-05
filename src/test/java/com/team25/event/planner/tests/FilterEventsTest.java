@@ -561,6 +561,7 @@ public class FilterEventsTest extends BaseTest {
         homePage.enterCountry(country);
         homePage.search();
 
+        waitForElementToBePresent(By.xpath("//app-home-all-events//app-home-event-card"));
         currentPage = homePage.getCurrentPage();
         totalPages = homePage.getTotalPages();
         assertEquals(currentPage, 1);
@@ -575,6 +576,25 @@ public class FilterEventsTest extends BaseTest {
             driver.close();
             driver.switchTo().window(tabs.get(0));
         }
+
+        homePage.nextPage();
+
+        waitForElementToBePresent(By.xpath("//app-home-all-events//app-home-event-card"));
+        currentPage = homePage.getCurrentPage();
+        totalPages = homePage.getTotalPages();
+        assertEquals(currentPage, 2);
+        assertEquals(totalPages, 2);
+        currentPageEvents = homePage.getCurrentPageEvents();
+        assertEquals(currentPageEvents.size(), 6);
+        for (WebElement eventCard : currentPageEvents) {
+            EventDetailsPage eventDetailsPage = openEventDetailsPage(eventCard);
+            assertTrue(eventDetailsPage.getPlace().contains(country));
+
+            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+            driver.close();
+            driver.switchTo().window(tabs.get(0));
+        }
+
 
         homePage.refreshFilter();
 
@@ -1391,6 +1411,9 @@ public class FilterEventsTest extends BaseTest {
         homePage.enterCountry(eventCountry);
         homePage.enterCity(eventCity);
         homePage.search();
+
+        waitForElementToBePresent(By.xpath("//app-home-all-events//app-home-event-card"));
+
 
         currentPage = homePage.getCurrentPage();
         totalPages = homePage.getTotalPages();
